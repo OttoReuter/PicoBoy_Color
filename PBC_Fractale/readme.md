@@ -1,4 +1,4 @@
-             <img width="500" height="304" alt="grafik" src="https://github.com/user-attachments/assets/dbc03a8d-b0f5-45d0-9b70-4e9501bc7a73" />
+<center><img width="500" height="304" alt="grafik" src="https://github.com/user-attachments/assets/dbc03a8d-b0f5-45d0-9b70-4e9501bc7a73" /></center>center>
 
 Arduino_PicoBoy_Color
 Fractalbilder erzeugen
