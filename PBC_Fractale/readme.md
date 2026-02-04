@@ -1,8 +1,9 @@
 <img width="500" height="304" alt="grafik" src="https://github.com/user-attachments/assets/dbc03a8d-b0f5-45d0-9b70-4e9501bc7a73" />
 
-PicoBoy_Color
 Arduino_PicoBoy_Color
+
 Fractalbilder erzeugen
+
 Ich zeige, wie man mit dem PicoBoy Color in der Arduino-IDE die Mandelbrotmenge darstellt. Es handelt sich um die Darstellung der s.g. Apfelmännchen. Der Mikrocontroller RP2040 zeigt dabei eine beeindruckende Rechenleistung.
 Hier sind ein paar Hinweise zur Bedienung des Programms:
     1. Beim Einschalten wird die komplette Teilmenge dargestellt und nach Fertigstellung ein Rechteck für einen Zoom eingeblendet. 
