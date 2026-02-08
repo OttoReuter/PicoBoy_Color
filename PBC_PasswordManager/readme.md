@@ -2,6 +2,8 @@
 
 ![bild_043](https://github.com/user-attachments/assets/bc18be6b-664d-45ba-a6b0-0f41d2e9f8ea)
 
+<img width="500" height="304" alt="grafik" src="https://github.com/user-attachments/assets/bc18be6b-664d-45ba-a6b0-0f41d2e9f8ea" />
+
 
 ## Grundsätzlich besteht bei der Umsetzung des Projektes folgendes Ziel:
 
