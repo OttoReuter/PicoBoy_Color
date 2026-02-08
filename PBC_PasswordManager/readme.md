@@ -20,8 +20,11 @@
 ### Erster Start (leeres EEPROM):
 
 * Gerät erkennt: keine 'Secrets'
-* Eingabe der Secrets über Serial-Monitor (Beschreibung erfolgt gesondert)
+* Eingabe der Secrets über Serial-Monitor
 * Gerät erkennt: kein PIN vorhanden
 * Modus: SET_PIN
 * 6-stellige PIN setzen
 * PIN wird in EEPROM gespeichert
+
+Die Beschreibung zur Eingabe der Secrets und Hinweise zur Bedienung finden Sie auf meiner Webseite
+https://www.dgebhardt.de/arduino/pw_manager.html
