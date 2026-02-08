@@ -1,4 +1,4 @@
 # PicoBoy_Color
 PBC projects
 
-Hier werden verschiedene Projekte zum PicoBoy Color vorgestellt.
+Im Oktober 2024 kam der PicoBoy - Color als Nachfolger des PicoBoy auf den Markt. Er ist mit einem Farbdisplay (240x280 Pixel) ausgestattet, hat GPIO's nach außen geführt und kann, wenn nicht über USB-C Anschluss, mit zwei AAA-Batterien versorgt werden. Das halte ich für erwähneswert, da sich bei einer durchschnittlichen Kapazität von 1200 mAh bei AAA-Batterien und einer Stromaufnahme von knapp 100 mA (nach meiner ersten Messung) eine Laufzeit von über 10 Stunden ergibt. Das stellt eine deutliche Verbesserung zur ersten Generation des PicoBoy dar. Ansonsten macht der PicoBoy-Color wegen des größeren Displays mehr Spass als der Vorgänger. Auch die drei LED's, der Anschluss für I2C-Sensoren und die Taster lassen sich gut in entsprechende Projekte einbinden. Nachfolgend werde ich, wie beim PicoBoy einige meiner Projekte zum Nachmachen vorstellen
