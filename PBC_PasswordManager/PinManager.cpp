@@ -1,164 +1,133 @@
-#include "PinManager.h"
+#include "KeyboardDE.h"
 
-// ================= Konstruktor =================
-PinManager::PinManager(Adafruit_ST7789* display) {
-    tft = display;
-    pinIndex = 0;
-    state = ENTER_PIN;
-    cursorVisible = true;
-    lastBlinkTime = millis();
-    for(int i=0;i<PIN_LENGTH;i++){
-        pinDigits[i]=0;
-        confirmed[i]=false;
-    }
+KeyboardDE kbdDE;
+
+void KeyboardDE::begin() {
+  Keyboard.begin();
 }
 
-// ================= begin =================
-void PinManager::begin() {
-    if (!isPinSet()) {
-        state = SET_PIN;
-    } else {
-        state = ENTER_PIN;
-        loadPinEEPROM();
-    }
-    resetPinInput();   // <-- PIN-Eingabe sauber initialisieren
-    drawPinScreen();
+void KeyboardDE::print(const char* text) {
+  while (*text) {
+    sendChar(*text++);
+    delay(5);
+  }
 }
 
-// ================= prüfen, ob PIN gesetzt =================
-bool PinManager::isPinSet() {
-    for(int i=0;i<PIN_LENGTH;i++)
-        if(EEPROM.read(i) != 0xFF) return true;
-    return false;
+void KeyboardDE::write(char c) {
+  sendChar(c);
 }
 
-// ================= Key Handling =================
-void PinManager::handleKey(uint8_t index) {
-    // LEFT = Abbruch / Reset
-    if(index == 2){
-        resetPinInput();
-        return;
-    }
-
-    // UP = Ziffer erhöhen
-    if(index == 0){
-        pinDigits[pinIndex] = (pinDigits[pinIndex]+1)%10;
-        drawPinScreen();
-        return;
-    }
-
-    // DOWN = Ziffer verringern
-    if(index == 1){
-        pinDigits[pinIndex] = (pinDigits[pinIndex]+9)%10;
-        drawPinScreen();
-        return;
-    }
-   
-    // CENTER = bestätigen / nächste Stelle
-    if(index == 4){
-        confirmed[pinIndex] = true;
-        pinIndex++;
-        if(pinIndex >= PIN_LENGTH){
-            if(state == SET_PIN){
-                savePinEEPROM();
-                state = UNLOCKED;
-                resetPinInput(); // Display sauber zurücksetzen
-            } else if(state == ENTER_PIN){
-                if(checkPin()) {
-                    state = UNLOCKED;
-                    resetPinInput(); // Display sauber zurücksetzen
-                }
-                else { // Fehler → Reset
-                    resetPinInput();
-                }
-            }
-        }
-        drawPinScreen();
-    }
+void KeyboardDE::pressEnter() {
+  Keyboard.write(KEY_RETURN);
 }
 
-// ================= PIN-Eingabe zurücksetzen =================
-void PinManager::resetPinInput() {
-    pinIndex = 0;
-    for(int i=0;i<PIN_LENGTH;i++){
-        pinDigits[i] = 0;
-        confirmed[i] = false;
-    }
+void KeyboardDE::pressTab() {
+  Keyboard.write(KEY_TAB);
 }
 
-// ================= Blinkender Cursor =================
-void PinManager::updateDisplay() {
-    if(millis() - lastBlinkTime > 500){
-        cursorVisible = !cursorVisible;
-        lastBlinkTime = millis();
-        drawPinScreen();
-    }
-}
+// ======================================================
+//                DE KEYMAP
+// ======================================================
+void KeyboardDE::sendChar(char c) {
 
-// ================= Prüfen PIN =================
-bool PinManager::checkPin() {
-    for(int i=0;i<PIN_LENGTH;i++)
-        if(pinDigits[i] != EEPROM.read(i)) return false;
-    return true;
-}
+  switch (c) {
 
-// ================= EEPROM speichern =================
-void PinManager::savePinEEPROM() {
-    for(int i=0;i<PIN_LENGTH;i++)
-        EEPROM.write(i, pinDigits[i]);
-    EEPROM.commit();
-}
+    // =========================
+    // Y / Z Tausch
+    // =========================
+    case 'z': Keyboard.write('y'); return;
+    case 'Z': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('y'); break;
 
-// ================= EEPROM laden =================
-void PinManager::loadPinEEPROM() {
-    for(int i=0;i<PIN_LENGTH;i++)
-        pinDigits[i] = EEPROM.read(i);
-}
+    case 'y': Keyboard.write('z'); return;
+    case 'Y': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('z'); break;
 
-// ================= Freigabe prüfen =================
-bool PinManager::isUnlocked() {
-    return state == UNLOCKED;
-}
+    // =========================
+    // Umlaute
+    // =========================
+    case 'ä': Keyboard.write('\''); return;
+    case 'ö': Keyboard.write(';');  return;
+    case 'ü': Keyboard.write('[');  return;
 
-// ================= PIN-Display =================
-void PinManager::drawPinScreen() {
-    // Überschrift 
-    tft->setCursor(20, 40);
-    tft->setTextColor(ST77XX_YELLOW);
-    tft->print("PasswordManager");
-    tft->setCursor(20, 100);
-    tft->setTextColor(ST77XX_WHITE);
-    if(state == SET_PIN) tft->print("Set PIN:");
-    else tft->print("Enter PIN:");
+    case 'Ä': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('\''); break;
+    case 'Ö': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press(';');  break;
+    case 'Ü': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('[');  break;
 
-    // Zahlenreihe
-    int x = 20;
-    int y = 150;
-    int spacing = 18;
-    int w = 18;   // Breite der Ziffern
-    int h = 22;   // Höhe
+    case 'ß': Keyboard.write('-'); return;
 
-    for(int i=0;i<PIN_LENGTH;i++){
-        int digitX = x + i*spacing;
+    // =========================
+    // AltGr Kombinationen
+    // =========================
+    case '@':
+      Keyboard.press(KEY_RIGHT_ALT);
+      Keyboard.press('q');
+      break;
 
-        // alten Inhalt löschen
-        tft->fillRect(digitX - 2, y - 18, spacing, 24, ST77XX_BLACK);
+    case '€':
+      Keyboard.press(KEY_RIGHT_ALT);
+      Keyboard.press('e');
+      break;
 
-        if(confirmed[i]){
-            tft->setCursor(digitX, y);
-            tft->setTextColor(ST77XX_WHITE);
-            tft->print("*");
-        }
-        else if(i==pinIndex){
-            tft->setCursor(digitX, y);
-            tft->setTextColor(ST77XX_YELLOW);
-            char c = cursorVisible ? ('0'+pinDigits[i]) : '_';
-            tft->print(c);
-        }
-        else{
-            tft->setCursor(digitX, y);
-            tft->setTextColor(ST77XX_WHITE);
-            tft->print("_");
-        }
-    }
+    case '{':
+      Keyboard.press(KEY_RIGHT_ALT);
+      Keyboard.press('7');
+      break;
+
+    case '[':
+      Keyboard.press(KEY_RIGHT_ALT);
+      Keyboard.press('8');
+      break;
+
+    case ']':
+      Keyboard.press(KEY_RIGHT_ALT);
+      Keyboard.press('9');
+      break;
+
+    case '}':
+      Keyboard.press(KEY_RIGHT_ALT);
+      Keyboard.press('0');
+      break;
+
+    case '\\':
+      Keyboard.press(KEY_RIGHT_ALT);
+      Keyboard.press('ß');
+      break;
+
+    case '|':
+      Keyboard.press(KEY_RIGHT_ALT);
+      Keyboard.press('<');
+      break;
+
+    case '~':
+      Keyboard.press(KEY_RIGHT_ALT);
+      Keyboard.press('+');
+      break;
+
+    // =========================
+    // Shift Sonderzeichen
+    // =========================
+    case '!': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('1'); break;
+    case '"': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('2'); break;
+    case '§': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('3'); break;
+    case '$': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('4'); break;
+    case '%': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('5'); break;
+    case '&': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('6'); break;
+    case '/': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('7'); break;
+    case '(': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('8'); break;
+    case ')': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('9'); break;
+    case '=': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('0'); break;
+    case '?': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('ß'); break;
+    case '*': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('+'); break;
+    case '\'': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('#'); break;
+    case ':': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('.'); break;
+    case ';': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press(','); break;
+    case '_': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('-'); break;
+    case '>': Keyboard.press(KEY_LEFT_SHIFT); Keyboard.press('<'); break;
+
+    default:
+      Keyboard.write(c);
+      return;
+  }
+
+  delay(5);
+  Keyboard.releaseAll();
 }
