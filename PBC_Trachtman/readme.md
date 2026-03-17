@@ -1,8 +1,10 @@
 <img width="500" height="304" alt="grafik" src="https://github.com/user-attachments/assets/dbc03a8d-b0f5-45d0-9b70-4e9501bc7a73" />
 
-# Fractalbilder erzeugen
+# Trachtman is back
 
-## PicoBoy_Color in der Arduino-IDE programmieren
+## Jump'n'Run Game für den PicoBoy_Color
+
+'Trachtman is back' ist eine Variante eines bekannten Jump-'n'-Run Spiels, umgesetzt auf dem PicoBoy Color. Es wurde in C++ programmiert und läuft sowohl auf dem Mikrocontroller RP 2040 und erst recht auf dem RP 2350 sehr flüssig. 
 
 Ich zeige, wie man mit dem PicoBoy Color in der Arduino-IDE die Mandelbrotmenge darstellt. Es handelt sich um die Darstellung der s.g. Apfelmännchen. Der Mikrocontroller RP2040 zeigt dabei eine beeindruckende Rechenleistung.
 
